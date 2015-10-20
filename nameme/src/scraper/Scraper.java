@@ -19,10 +19,17 @@ public class Scraper {
 	
 	
 	public static void getHtml() throws IOException {
-		Document doc = Jsoup.connect("http://www.allsongsby.com/").get();
+		Document doc = Jsoup.connect("http://www.allsongsby.com/artist/drake/271256/").get();
 		String title = doc.title();
 		System.out.println(title);
 		
+		printHeader(doc);
+		printBody(doc);
+
+	}
+	
+	
+	public static void printHeader(Document doc) {
 		//parse + print headings 
 		Element thead = doc.select("thead").first();
 		Element trhead = thead.select("tr").first();
@@ -41,12 +48,11 @@ public class Scraper {
 				}
 			}
 		System.out.println("");
-		
+	}
+	
+	public static void printBody(Document doc) {
 		//parse + print body
-		Element table = doc.select("tbody").first();
-		Elements trs = table.select("tr");
-		Iterator<Element> trIt = trs.iterator();
-		
+		Iterator<Element> trIt = getBodyTrIt(doc);
 		while (trIt.hasNext()) {
 			Element tr = trIt.next();
 			Elements tds = tr.select("td");
@@ -59,11 +65,14 @@ public class Scraper {
 				}
 			}
 			System.out.println("");
-				
 		}
-		
-
 	}
-
+	
+	public static Iterator<Element> getBodyTrIt(Document doc) {
+		Element table = doc.select("tbody").first();
+		Elements trs = table.select("tr");
+		Iterator<Element> trIt = trs.iterator();
+		return trIt;
+	}
 }
 
