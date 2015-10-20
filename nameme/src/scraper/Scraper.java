@@ -23,21 +23,47 @@ public class Scraper {
 		String title = doc.title();
 		System.out.println(title);
 		
-		Element table = doc.select("thead").first();
-		Element tr = table.select("tr").first();
-		Elements ths = tr.select("th");
-		Iterator thIt = ths.iterator();
+		//parse + print headings 
+		Element thead = doc.select("thead").first();
+		Element trhead = thead.select("tr").first();
+		Elements ths = trhead.select("th");
+		Iterator<Element> thIt = ths.iterator();
 		
-		for (int i = 0; i < 6; i++) {
-			Element th = (Element) thIt.next();
-			if ( (i == 0) || (i == 4) || (i == 5) )
-			{
-			System.out.print(th.text() + "     ");
+		boolean header = true;
+
+			for (int i = 0; i < 6; i++) {
+				if (header) {
+					Element th = (Element) thIt.next();
+					if ( (i == 0) || (i == 4) || (i == 5) )
+					{
+					System.out.print(th.text() + "     ");
+					}
+				}
 			}
+		System.out.println("");
+		
+		//parse + print body
+		Element table = doc.select("tbody").first();
+		Elements trs = table.select("tr");
+		Iterator<Element> trIt = trs.iterator();
+		
+		while (trIt.hasNext()) {
+			Element tr = trIt.next();
+			Elements tds = tr.select("td");
+			Iterator<Element> tdIt = tds.iterator();
+			for (int i = 0; i < 6; i++) {
+				Element td = (Element) tdIt.next();
+				if ( (i == 0) || (i == 4) || (i == 5) )
+				{
+				System.out.print(td.text() + "     ");
+				}
+			}
+			System.out.println("");
+				
 		}
+		
 
 	}
 
 }
-
 
