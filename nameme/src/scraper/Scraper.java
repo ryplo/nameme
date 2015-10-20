@@ -1,7 +1,9 @@
 package scraper;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Iterator;
+import java.util.Random;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.*;
@@ -48,6 +50,30 @@ public class Scraper {
 				}
 			}
 		System.out.println("");
+	}
+	
+	public static void playSong (Document doc) {
+		//parse + print body
+		Iterator<Element> trIt = getBodyTrIt(doc);
+		while (trIt.hasNext()) {
+			Element tr = trIt.next();
+			Random rand = null;
+			boolean random = rand.nextBoolean();
+			if (random) {
+				Element td = tr.select("td").first();
+				URL url;
+			}
+			Elements tds = tr.select("td");
+			Iterator<Element> tdIt = tds.iterator();
+			for (int i = 0; i < 6; i++) {
+				Element td = (Element) tdIt.next();
+				if ( (i == 0) || (i == 4) || (i == 5) )
+				{
+				System.out.print(td.text() + "     ");
+				}
+			}
+			System.out.println("");
+		}
 	}
 	
 	public static void printBody(Document doc) {
