@@ -1,6 +1,8 @@
 package scraper;
 
+import java.awt.Desktop;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Random;
@@ -11,7 +13,7 @@ import org.jsoup.select.*;
 
 public class Scraper {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws URISyntaxException {
 	try {
 		getHtml();
 	} catch (IOException e) {
@@ -20,7 +22,7 @@ public class Scraper {
 	}
 	
 	
-	public static void getHtml() throws IOException {
+	public static void getHtml() throws IOException, URISyntaxException {
 		Document doc = Jsoup.connect("http://www.allsongsby.com/artist/drake/271256/").get();
 		String title = doc.title();
 		System.out.println(title);
@@ -53,11 +55,13 @@ public class Scraper {
 		System.out.println("");
 	}
 	
-	public static void playSong (Document doc) throws IOException {
+	//PLays a random drake song :)
+	public static void playSong (Document doc) throws IOException, URISyntaxException {
 		//parse + print body
 		Iterator<Element> trIt = getBodyTrIt(doc);
 		Random rand = new Random();
-		while (trIt.hasNext()) {
+		boolean found = false;
+		while (!found) {
 			Element tr = trIt.next();
 			double number = rand.nextDouble();
 			System.out.println( "DA RANDOM: " + number);
@@ -71,13 +75,15 @@ public class Scraper {
 					Element td = tdIt.next();
 					System.out.println(td.text());
 					if (i == 3) {
-						System.out.println(td.select("a").attr("onclick").replace("pA(", ""));
-						//url = new URI(td.select("a").attr("onclick").replace("pA(", ""));
-						//java.awt.Desktop.getDesktop().browse(url);
+						String link = td.select("a").attr("onclick");
+						System.out.println(link);
+						link = link.substring(link.indexOf("h"), link.indexOf("\"",10));
+						url = new URL(link);
+						Desktop.getDesktop().browse(url.toURI());
+						found = true;
 						break;
 					}
 				}
-			
 			}
 		}
 	}
