@@ -4,8 +4,11 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.*;
@@ -13,24 +16,55 @@ import org.jsoup.select.*;
 
 public class Scraper {
 
-	public static void main(String[] args) throws URISyntaxException {
-	try {
-		getHtml();
-	} catch (IOException e) {
-		e.printStackTrace();
+	private static Scanner myScanner = new Scanner(System.in);
+	
+	public static void main(String[] args) throws URISyntaxException, IOException {
+		Document doc = getHtml(getArtistInput());		
+		getResultsChoice(getResults(doc));
 	}
+	
+	public static String getArtistInput() {
+		System.out.println("Which artist do you think you know best?");
+		String artist = myScanner.nextLine();
+		return artist;
 	}
 	
 	
-	public static void getHtml() throws IOException, URISyntaxException {
-		Document doc = Jsoup.connect("http://www.allsongsby.com/artist/drake/271256/").get();
+	public static Document getHtml(String artist) throws IOException, URISyntaxException {
+		Document doc = Jsoup.connect("http://search.azlyrics.com/search.php?q=" + artist).get();
 		String title = doc.title();
 		System.out.println(title);
-		
-		printHeader(doc);
-		printBody(doc);
-		playSong(doc);
+		return doc;
+	//	printHeader(doc);
+	//	printBody(doc);
 
+	}
+	
+	public static List<String> getResults(Document doc) {
+		List<String> results = new ArrayList<String>();
+		Element resTable = doc.select("table").first();
+		Element resBody = resTable.select("tbody").first();
+		Elements resRows = resBody.select("tr");
+		Iterator<Element> resIt = resRows.iterator();
+		int i = 0;
+		
+		while(resIt.hasNext()) {
+			Element resTr = resIt.next();
+			Element resTd = resTr.select("td").first();
+			results.add(resTd.text());
+			i++;
+		}
+		return results;
+	}
+	
+	public static String getResultsChoice(List<String> results) {
+		int resultsSize = results.size();
+		System.out.println("Select by typing in the number");
+		for (int i = 0; i < resultsSize; i++) {
+			System.out.println(results.get(i));
+		}
+		String choice = myScanner.nextLine();
+		return choice;
 	}
 	
 	
@@ -55,38 +89,6 @@ public class Scraper {
 		System.out.println("");
 	}
 	
-	//PLays a random drake song :)
-	public static void playSong (Document doc) throws IOException, URISyntaxException {
-		//parse + print body
-		Iterator<Element> trIt = getBodyTrIt(doc);
-		Random rand = new Random();
-		boolean found = false;
-		while (!found) {
-			Element tr = trIt.next();
-			double number = rand.nextDouble();
-			System.out.println( "DA RANDOM: " + number);
-			URL url;
-			
-			if (number < 0.5) {
-				System.out.println("YAY");
-				Elements tds = tr.select("td");
-				Iterator<Element> tdIt = tds.iterator();
-				for (int i = 0; i < 4; i++) {
-					Element td = tdIt.next();
-					System.out.println(td.text());
-					if (i == 3) {
-						String link = td.select("a").attr("onclick");
-						System.out.println(link);
-						link = link.substring(link.indexOf("h"), link.indexOf("\"",10));
-						url = new URL(link);
-						Desktop.getDesktop().browse(url.toURI());
-						found = true;
-						break;
-					}
-				}
-			}
-		}
-	}
 	
 	//prints body of table
 	public static void printBody(Document doc) {
