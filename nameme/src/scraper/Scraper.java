@@ -41,56 +41,5 @@ public class Scraper {
 		return results;
 	}
 	
-
-	
-	
-	public static void printHeader(Document doc) {
-		//parse + print headings 
-		Element thead = doc.select("thead").first();
-		Element trhead = thead.select("tr").first();
-		Elements ths = trhead.select("th");
-		Iterator<Element> thIt = ths.iterator();
-		
-		boolean header = true;
-
-			for (int i = 0; i < 6; i++) {
-				if (header) {
-					Element th = (Element) thIt.next();
-					if ( (i == 0) || (i == 4) || (i == 5) )
-					{
-					System.out.print(th.text() + "     ");
-					}
-				}
-			}
-		System.out.println("");
-	}
-	
-	
-	//prints body of table
-	public static void printBody(Document doc) {
-		//parse + print body
-		Iterator<Element> trIt = getBodyTrIt(doc);
-		while (trIt.hasNext()) {
-			Element tr = trIt.next();
-			Elements tds = tr.select("td");
-			Iterator<Element> tdIt = tds.iterator();
-			for (int i = 0; i < 6; i++) {
-				Element td = (Element) tdIt.next();
-				if ( (i == 0) || (i == 4) || (i == 5) )
-				{
-				System.out.print(td.text() + "     ");
-				}
-			}
-			System.out.println("");
-		}
-	}
-	
-	//returns iterator for body table row elements
-	public static Iterator<Element> getBodyTrIt(Document doc) {
-		Element table = doc.select("tbody").first();
-		Elements trs = table.select("tr");
-		Iterator<Element> trIt = trs.iterator();
-		return trIt;
-	}
 }
 
