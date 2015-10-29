@@ -15,28 +15,12 @@ import org.jsoup.nodes.*;
 import org.jsoup.select.*;
 
 public class Scraper {
-
-	private static Scanner myScanner = new Scanner(System.in);
 	
-	public static void main(String[] args) throws URISyntaxException, IOException {
-		Document doc = getHtml(getArtistInput());		
-		getResultsChoice(getResults(doc));
-	}
-	
-	public static String getArtistInput() {
-		System.out.println("Which artist do you think you know best?");
-		String artist = myScanner.nextLine();
-		return artist;
-	}
-	
-	
-	public static Document getHtml(String artist) throws IOException, URISyntaxException {
-		Document doc = Jsoup.connect("http://search.azlyrics.com/search.php?q=" + artist).get();
+	public static Document connectHtml(String link, String search) throws IOException, URISyntaxException {
+		Document doc = Jsoup.connect(link + search).get();
 		String title = doc.title();
 		System.out.println(title);
 		return doc;
-	//	printHeader(doc);
-	//	printBody(doc);
 
 	}
 	
@@ -57,15 +41,7 @@ public class Scraper {
 		return results;
 	}
 	
-	public static String getResultsChoice(List<String> results) {
-		int resultsSize = results.size();
-		System.out.println("Select by typing in the number");
-		for (int i = 0; i < resultsSize; i++) {
-			System.out.println(results.get(i));
-		}
-		String choice = myScanner.nextLine();
-		return choice;
-	}
+
 	
 	
 	public static void printHeader(Document doc) {
