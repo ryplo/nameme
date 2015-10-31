@@ -16,15 +16,14 @@ import org.jsoup.select.*;
 
 public class Scraper {
 	
-	public static Document connectHtml(String link, String search) throws IOException, URISyntaxException {
+	public Document connectHtml(String link, String search) throws IOException, URISyntaxException {
 		Document doc = Jsoup.connect(link + search).get();
 		String title = doc.title();
 		System.out.println(title);
 		return doc;
-
 	}
 	
-	public static List<String> getResults(Document doc) {
+	public List<String> getResults(Document doc) {
 		List<String> results = new ArrayList<String>();
 		Element resTable = doc.select("table").first();
 		Element resBody = resTable.select("tbody").first();

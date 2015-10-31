@@ -22,31 +22,28 @@ public class Artist {
 	
 	private static Scanner myScanner = new Scanner(System.in);
 	private static final String URL = "http://search.azlyrics.com/search.php?q=";
-	private static List<String> results = new ArrayList<String>();
-	private static int choiceNum;
-	private static String choiceArtist;
 	
-	public static String getArtist() throws IOException, URISyntaxException {
-		setArtistResults();
-		getResultsInput();
-		formatArtistChoice();
-		return choiceArtist;
+	public String getArtist() throws IOException, URISyntaxException {
+		String artist = getArtistInput();
+		List<String> results = setArtistResults(artist);
+		int choiceNum = getResultsInput(results);
+		return formatArtistChoice(choiceNum, results);
 	}
 	
-	public static String getArtistInput() {
+	public String getArtistInput() {
 		System.out.println("Which artist do you think you know best?");
 		String artist = myScanner.nextLine();
 		return artist;
 	}
 	
-	public static void setArtistResults() throws IOException, URISyntaxException {
+	public List<String> setArtistResults(String artist) throws IOException, URISyntaxException {
 		Scraper scraper = new Scraper();
-		Document doc = scraper.connectHtml(URL, getArtistInput());
-		results = scraper.getResults(doc);
+		Document doc = scraper.connectHtml(URL, artist);
+		return scraper.getResults(doc);
 	}
 	
 	
-	public static void getResultsInput() {
+	public int getResultsInput(List<String> results) {
 		int resultsSize = results.size();
 		System.out.println("Select by typing in the number");
 		for (int i = 0; i < resultsSize; i++) {
@@ -54,12 +51,12 @@ public class Artist {
 		}
 		String choiceIn = myScanner.nextLine();
 		System.out.println(results.get(Integer.parseInt(choiceIn)-1));
-		choiceNum = (Integer.parseInt(choiceIn)-1);
+		return (Integer.parseInt(choiceIn)-1);
 	}
 	
-	public static void formatArtistChoice() {
-		choiceArtist = results.get(choiceNum).replaceAll("[^a-zA-Z ]", "").trim();
-		System.out.println(choiceArtist);
+	public String formatArtistChoice(int choiceNum, List<String> results) {
+		System.out.println(results.get(choiceNum).replaceAll("[^a-zA-Z]", "").trim());
+		return results.get(choiceNum).replaceAll("[^a-zA-Z]", "").trim();
 	}
 	
 }
