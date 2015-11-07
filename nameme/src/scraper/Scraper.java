@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -23,8 +25,12 @@ public class Scraper {
 		return doc;
 	}
 	
-	public List<String> findArtistResults(Document doc) {
-		List<String> results = new ArrayList<String>();
+	public void findArtistResults(Document doc, List<String> artists, List<String> links) {
+//		Map<String, String> results = new HashMap<String,String>();
+//		HashMap<String, String> results = new HashMap<String, String>();
+//		List<String> artists = new ArrayList<String>();
+//		List<String> links = new ArrayList<String>();
+//		ArrayList<HashMap<String, String>> results = new ArrayList<HashMap<String, String>>();
 		Element resTable = doc.select("table").first();
 		Element resBody = resTable.select("tbody").first();
 		Elements resRows = resBody.select("tr");
@@ -34,10 +40,15 @@ public class Scraper {
 		while(resIt.hasNext()) {
 			Element resTr = resIt.next();
 			Element resTd = resTr.select("td").first();
-			results.add(resTd.text());
+			Element resLink = resTd.select("a").first();
+//			HashMap<String, String> result = new HashMap<String, String>();
+//			result.put(resTd.text(), resLink.attr("href"));
+//			results.add(result);
+			artists.add(resTd.text());
+			links.add(resLink.attr("href"));
+			System.out.println(resTd.text() + "\t" + resLink.attr("href"));
 			i++;
 		}
-		return results;
 	}
 	
 	public List<String> findAlbumResults(Document doc) {
@@ -50,6 +61,7 @@ public class Scraper {
 			Element div = divsIt.next();
 			System.out.println(div.select("b").text());
 			results.add(div.select("b").text());
+			i++;
 		}
 		
 		return results;

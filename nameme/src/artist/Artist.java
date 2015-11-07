@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.regex.*;
 import java.util.Scanner;
@@ -25,7 +27,7 @@ public class Artist {
 	
 	public String getArtist() throws IOException, URISyntaxException {
 		String artist = getArtistInput();
-		List<String> results = setArtistResults(artist);
+		Map<String, String> results = setArtistResults(artist);
 		int choiceNum = getResultsInput(results);
 		return formatArtistChoice(choiceNum, results);
 	}
@@ -36,25 +38,28 @@ public class Artist {
 		return artist;
 	}
 	
-	public List<String> setArtistResults(String artist) throws IOException, URISyntaxException {
+	public ArrayList<HashMap<String, String>> setArtistResults(String artist) throws IOException, URISyntaxException {
 		Scraper scraper = new Scraper();
 		Document doc = scraper.connectHtml(URL + artist);
-		return scraper.findArtistResults(doc);
+		List<String> artists = new ArrayList<String>();
+		List<String> links = new ArrayList<String>();
+		scraper.findArtistResults(doc, artists, links);
+		return 
 	}
 	
 	
-	public int getResultsInput(List<String> results) {
+	public int getResultsInput(ArrayList<HashMap<String, String>> results) {
 		int resultsSize = results.size();
 		System.out.println("Select by typing in the number");
 		for (int i = 0; i < resultsSize; i++) {
-			System.out.println(results.get(i));
+			System.out.println(results.get(i).keySet().);
 		}
 		String choiceIn = myScanner.nextLine();
 		System.out.println(results.get(Integer.parseInt(choiceIn)-1));
 		return (Integer.parseInt(choiceIn)-1);
 	}
 	
-	public String formatArtistChoice(int choiceNum, List<String> results) {
+	public String formatArtistChoice(int choiceNum, Map<String, String> results) {
 		System.out.println(results.get(choiceNum).replaceAll("[^a-zA-Z]", "").trim());
 		return results.get(choiceNum).replaceAll("[^a-zA-Z]", "").trim();
 	}
