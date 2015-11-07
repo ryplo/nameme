@@ -16,14 +16,14 @@ import org.jsoup.select.*;
 
 public class Scraper {
 	
-	public Document connectHtml(String link, String search) throws IOException, URISyntaxException {
-		Document doc = Jsoup.connect(link + search).get();
+	public Document connectHtml(String link) throws IOException, URISyntaxException {
+		Document doc = Jsoup.connect(link).get();
 		String title = doc.title();
 		System.out.println(title);
 		return doc;
 	}
 	
-	public List<String> getResults(Document doc) {
+	public List<String> findArtistResults(Document doc) {
 		List<String> results = new ArrayList<String>();
 		Element resTable = doc.select("table").first();
 		Element resBody = resTable.select("tbody").first();
@@ -37,6 +37,21 @@ public class Scraper {
 			results.add(resTd.text());
 			i++;
 		}
+		return results;
+	}
+	
+	public List<String> findAlbumResults(Document doc) {
+		List<String> results = new ArrayList<String>();
+		Elements divs = doc.getElementsByClass("album");
+		Iterator<Element> divsIt = divs.iterator();
+		int i = 0;
+		
+		while(divsIt.hasNext()) {
+			Element div = divsIt.next();
+			System.out.println(div.select("b").text());
+			results.add(div.select("b").text());
+		}
+		
 		return results;
 	}
 	

@@ -14,6 +14,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
 
+import album.Album;
 import artist.Artist;
 import scraper.Scraper;
 
@@ -24,7 +25,9 @@ public class Nameme {
 	
 	public static void main(String[] args) throws IOException, URISyntaxException {
 		Artist artist = new Artist();
-		artist.getArtist();
+		String artistName = artist.getArtist();
+		Album album = new Album();
+		album.getAlbum(artistName);
 	}
 
 	

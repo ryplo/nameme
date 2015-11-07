@@ -38,8 +38,8 @@ public class Artist {
 	
 	public List<String> setArtistResults(String artist) throws IOException, URISyntaxException {
 		Scraper scraper = new Scraper();
-		Document doc = scraper.connectHtml(URL, artist);
-		return scraper.getResults(doc);
+		Document doc = scraper.connectHtml(URL + artist);
+		return scraper.findArtistResults(doc);
 	}
 	
 	
