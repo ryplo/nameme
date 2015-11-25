@@ -16,6 +16,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
 
+import artist.Artist;
+
 public class Scraper {
 	
 	public Document connectHtml(String link) throws IOException, URISyntaxException {
@@ -25,33 +27,25 @@ public class Scraper {
 		return doc;
 	}
 	
-	public void findArtistResults(Document doc, List<String> artists, List<String> links) {
-//		Map<String, String> results = new HashMap<String,String>();
-//		HashMap<String, String> results = new HashMap<String, String>();
-//		List<String> artists = new ArrayList<String>();
-//		List<String> links = new ArrayList<String>();
-//		ArrayList<HashMap<String, String>> results = new ArrayList<HashMap<String, String>>();
-		Element resTable = doc.select("table").first();
-		Element resBody = resTable.select("tbody").first();
-		Elements resRows = resBody.select("tr");
-		Iterator<Element> resIt = resRows.iterator();
+	public List<Artist> findArtistResults(String url) throws IOException, URISyntaxException {
+		List<Artist> artistList = new ArrayList<Artist>();
+		Document doc = connectHtml(url);
+		Element table = doc.select("table.table").first();
+		Elements resRows = table.select("td");
 		int i = 0;
 		
-		while(resIt.hasNext()) {
-			Element resTr = resIt.next();
-			Element resTd = resTr.select("td").first();
-			Element resLink = resTd.select("a").first();
-//			HashMap<String, String> result = new HashMap<String, String>();
-//			result.put(resTd.text(), resLink.attr("href"));
-//			results.add(result);
-			artists.add(resTd.text());
-			links.add(resLink.attr("href"));
-			System.out.println(resTd.text() + "\t" + resLink.attr("href"));
-			i++;
+		for(Element res : resRows) {
+			Artist artist = new Artist();
+			artist.setName(res.text().replaceAll("[^a-zA-Z ]", "").trim());
+			artist.setUrl(res.select("a").attr("href"));
+//			System.out.println(res.text() + "\t" + res.select("a").attr("href"));
+			artistList.add(artist);
 		}
+		return artistList;
 	}
 	
-	public List<String> findAlbumResults(Document doc) {
+	public List<String> findAlbumResults(String url) throws IOException, URISyntaxException {
+		Document doc = connectHtml(url);
 		List<String> results = new ArrayList<String>();
 		Elements divs = doc.getElementsByClass("album");
 		Iterator<Element> divsIt = divs.iterator();

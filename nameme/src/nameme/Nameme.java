@@ -16,21 +16,38 @@ import org.jsoup.select.*;
 
 import album.Album;
 import artist.Artist;
+import artistService.ArtistService;
 import scraper.Scraper;
 
 public class Nameme {
-
+	
 	private static Scanner myScanner = new Scanner(System.in);
-	private static Scraper scraper;
+	private static final String URL = "http://search.azlyrics.com/search.php?q=";
 	
 	public static void main(String[] args) throws IOException, URISyntaxException {
-		Artist artist = new Artist();
-		String artistName = artist.getArtist();
-		Album album = new Album();
-		album.getAlbum(artistName);
+		Scraper scraper = new Scraper();
+		String artist = getArtistInput();
+		List<Artist> artistChoices = scraper.findArtistResults(URL + artist);
+		Artist artistChoice = getArtistChoice(artistChoices);
+		System.out.println(artistChoice.getName() + " : " + artistChoice.getUrl());
+//		List<Album> albumResults = scraper.findAlbumResults(artistChoice.getUrl());
 	}
-
 	
-
-
+	public static String getArtistInput() {
+		System.out.println("Which artist do you think you know best?");
+		String artist = myScanner.nextLine();
+		return artist;
+	}
+	
+	private static Artist getArtistChoice(List<Artist> artistResults) {
+		int i = 1; 
+		for (Artist artist : artistResults) {
+			System.out.println(i + ". " + artist.getName());
+			i++;
+		}
+		System.out.println("Enter your choice.");
+		String choice = myScanner.nextLine();
+		return artistResults.get(Integer.valueOf(choice) - 1);
+	}
+	
 }
