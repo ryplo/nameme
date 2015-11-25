@@ -16,7 +16,6 @@ import org.jsoup.select.*;
 
 import album.Album;
 import artist.Artist;
-import artistService.ArtistService;
 import scraper.Scraper;
 
 public class Nameme {
@@ -30,7 +29,7 @@ public class Nameme {
 		List<Artist> artistChoices = scraper.findArtistResults(URL + artist);
 		Artist artistChoice = getArtistChoice(artistChoices);
 		System.out.println(artistChoice.getName() + " : " + artistChoice.getUrl());
-//		List<Album> albumResults = scraper.findAlbumResults(artistChoice.getUrl());
+		List<Album> albumResults = scraper.findAlbumResults(artistChoice.getUrl());
 	}
 	
 	public static String getArtistInput() {

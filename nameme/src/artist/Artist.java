@@ -4,14 +4,14 @@ import java.net.URL;
 
 public class Artist {
 	
-	private String name;
+	private String artistName;
 	private String url;
 	
 	public String getName() {
-		return name;
+		return artistName;
 	}
 	public void setName(String name) {
-		this.name = name;
+		this.artistName = name;
 	}
 	public String getUrl() {
 		return url;

@@ -16,6 +16,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
 
+import album.Album;
 import artist.Artist;
 
 public class Scraper {
@@ -36,7 +37,7 @@ public class Scraper {
 		
 		for(Element res : resRows) {
 			Artist artist = new Artist();
-			artist.setName(res.text().replaceAll("[^a-zA-Z ]", "").trim());
+			artist.setName(formatName(res.text()));
 			artist.setUrl(res.select("a").attr("href"));
 //			System.out.println(res.text() + "\t" + res.select("a").attr("href"));
 			artistList.add(artist);
@@ -44,21 +45,27 @@ public class Scraper {
 		return artistList;
 	}
 	
-	public List<String> findAlbumResults(String url) throws IOException, URISyntaxException {
+	public List<Album> findAlbumResults(String url) throws IOException, URISyntaxException {
 		Document doc = connectHtml(url);
-		List<String> results = new ArrayList<String>();
+		List<Album> results = new ArrayList<Album>();
 		Elements divs = doc.getElementsByClass("album");
 		Iterator<Element> divsIt = divs.iterator();
 		int i = 0;
 		
 		while(divsIt.hasNext()) {
 			Element div = divsIt.next();
-			System.out.println(div.select("b").text());
-			results.add(div.select("b").text());
+			Album album = new Album();
+			System.out.println(formatName(div.select("b").text()));
+			album.setAlbumName(formatName(div.select("b").text()));
+			results.add(album);
 			i++;
 		}
 		
 		return results;
+	}
+	
+	private String formatName(String word) {
+		return word.replaceAll("[^a-zA-Z ]", "").trim();
 	}
 	
 }
