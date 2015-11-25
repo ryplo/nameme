@@ -48,18 +48,41 @@ public class Scraper {
 	public List<Album> findAlbumResults(String url) throws IOException, URISyntaxException {
 		Document doc = connectHtml(url);
 		List<Album> results = new ArrayList<Album>();
-		Elements divs = doc.getElementsByClass("album");
-		Iterator<Element> divsIt = divs.iterator();
-		int i = 0;
+		Element list = doc.select("div#listAlbum").first();
+		Elements elems = list.select("div, a");
+		Iterator<Element> elemsIt = elems.iterator();
 		
-		while(divsIt.hasNext()) {
-			Element div = divsIt.next();
-			Album album = new Album();
-			System.out.println(formatName(div.select("b").text()));
-			album.setAlbumName(formatName(div.select("b").text()));
-			results.add(album);
-			i++;
+		while(elemsIt.hasNext()) {
+			Element elem = elemsIt.next();
+			if(elem.tagName() == "div") {
+				Album album = new Album();
+				album.setAlbumName(elem.select("b").text());
+				System.out.println(album.getAlbumName());
+			}
+			
 		}
+			
+			
+//			
+//			
+//		Elements divs = doc.getElementsByClass("album");
+//		Iterator<Element> divsIt = divs.iterator();
+//		int i = 0;
+//		
+//		while(divsIt.hasNext()) {
+//			Element div = divsIt.next();
+//			Album album = new Album();
+//			album.setAlbumName(formatName(div.select("b").text()));
+//			Element divAlbum = doc.select("div.listAlbum").first();
+//			Elements songs = divAlbum.select("div.album + a");
+//			Iterator<Element> songsIt = songs.iterator();
+//			
+//				while(songsIt.hasNext()) {
+//					System.out.println(songsIt.next().text());
+//				}
+//			results.add(album);
+//			i++;
+//		}
 		
 		return results;
 	}
