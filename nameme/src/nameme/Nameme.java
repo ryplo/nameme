@@ -17,6 +17,7 @@ import org.jsoup.select.*;
 import album.Album;
 import artist.Artist;
 import scraper.Scraper;
+import song.Song;
 
 public class Nameme {
 	

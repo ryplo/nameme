@@ -18,6 +18,7 @@ import org.jsoup.select.*;
 
 import album.Album;
 import artist.Artist;
+import song.Song;
 
 public class Scraper {
 	
@@ -39,7 +40,6 @@ public class Scraper {
 			Artist artist = new Artist();
 			artist.setName(formatName(res.text()));
 			artist.setUrl(res.select("a").attr("href"));
-//			System.out.println(res.text() + "\t" + res.select("a").attr("href"));
 			artistList.add(artist);
 		}
 		return artistList;
@@ -48,42 +48,33 @@ public class Scraper {
 	public List<Album> findAlbumResults(String url) throws IOException, URISyntaxException {
 		Document doc = connectHtml(url);
 		List<Album> results = new ArrayList<Album>();
-		Element list = doc.select("div#listAlbum").first();
-		Elements elems = list.select("div, a");
-		Iterator<Element> elemsIt = elems.iterator();
 		
-		while(elemsIt.hasNext()) {
-			Element elem = elemsIt.next();
-			if(elem.tagName() == "div") {
+		Elements list = doc.select("div#listAlbum");
+		Elements stuffs = list.select("b, a");
+		Iterator<Element> stuffIt = stuffs.iterator();
+
+		while(stuffIt.hasNext()) {
+			Element thing = stuffIt.next();
+			if (thing.hasText()) {
 				Album album = new Album();
-				album.setAlbumName(elem.select("b").text());
+				album.setAlbumName(thing.text());
 				System.out.println(album.getAlbumName());
+				List<Song> songList = new ArrayList<Song>();
+				boolean hasSong = false;
+				Element otherThing = stuffIt.next();
+				while(otherThing.tagName() == "a" && otherThing.hasText()) {
+					Song song = new Song();
+					song.setSongName(otherThing.text());
+					System.out.println(song.getSongName());
+					songList.add(song);
+					hasSong = true;
+					otherThing = stuffIt.next();
+				}
+				if(hasSong) {
+					album.setAlbumSongs(songList);
+				}
 			}
-			
 		}
-			
-			
-//			
-//			
-//		Elements divs = doc.getElementsByClass("album");
-//		Iterator<Element> divsIt = divs.iterator();
-//		int i = 0;
-//		
-//		while(divsIt.hasNext()) {
-//			Element div = divsIt.next();
-//			Album album = new Album();
-//			album.setAlbumName(formatName(div.select("b").text()));
-//			Element divAlbum = doc.select("div.listAlbum").first();
-//			Elements songs = divAlbum.select("div.album + a");
-//			Iterator<Element> songsIt = songs.iterator();
-//			
-//				while(songsIt.hasNext()) {
-//					System.out.println(songsIt.next().text());
-//				}
-//			results.add(album);
-//			i++;
-//		}
-		
 		return results;
 	}
 	
