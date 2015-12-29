@@ -6,6 +6,13 @@ public class Song {
 	private String songUrl;
 	private String songLyrics;
 	
+	public Song(){
+		
+	}
+	
+	public Song(String songName) {
+		this.songName = songName;
+	}
 	
 	public String getSongName() {
 		return songName;

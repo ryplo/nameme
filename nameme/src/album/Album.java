@@ -14,7 +14,21 @@ public class Album {
 
 	private String albumName;
 	private List<Song> albumSongs;
+	private String albumType;
+	private String albumYear;
 	
+	public String getAlbumType() {
+		return albumType;
+	}
+	public void setAlbumType(String albumType) {
+		this.albumType = albumType;
+	}
+	public String getAlbumYear() {
+		return albumYear;
+	}
+	public void setAlbumYear(String albumYear) {
+		this.albumYear = albumYear;
+	}
 	public String getAlbumName() {
 		return albumName;
 	}

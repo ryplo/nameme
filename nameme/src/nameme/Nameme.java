@@ -33,9 +33,11 @@ public class Nameme {
 		List<Album> albumResults = scraper.findAlbumResults(artistChoice.getUrl());
 	}
 	
+	// method is unnecessary, move logic to main()
 	public static String getArtistInput() {
 		System.out.println("Which artist do you think you know best?");
 		String artist = myScanner.nextLine();
+		// should validate
 		return artist;
 	}
 	

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.*;
@@ -21,6 +22,10 @@ import artist.Artist;
 import song.Song;
 
 public class Scraper {
+	
+	private final String SKETCHY_URL = "http://www.azlyrics.com/";
+	private final String HTML = ".html";
+	private final int[] list = {0, 1, 2, 3, 4, 5, 6, 7, 8};
 	
 	public Document connectHtml(String link) throws IOException, URISyntaxException {
 		Document doc = Jsoup.connect(link).get();
@@ -49,38 +54,47 @@ public class Scraper {
 		Document doc = connectHtml(url);
 		List<Album> results = new ArrayList<Album>();
 		
-		Elements list = doc.select("div#listAlbum");
-		Elements stuffs = list.select("b, a");
-		Iterator<Element> stuffIt = stuffs.iterator();
-
-		while(stuffIt.hasNext()) {
-			Element thing = stuffIt.next();
-			if (thing.hasText()) {
-				Album album = new Album();
-				album.setAlbumName(thing.text());
-				System.out.println(album.getAlbumName());
-				List<Song> songList = new ArrayList<Song>();
-				boolean hasSong = false;
-				Element otherThing = stuffIt.next();
-				while(otherThing.tagName() == "a" && otherThing.hasText()) {
-					Song song = new Song();
-					song.setSongName(otherThing.text());
-					System.out.println(song.getSongName());
-					songList.add(song);
-					hasSong = true;
-					otherThing = stuffIt.next();
+		Elements list = doc.select("div#listAlbum > *");
+		Album newAlbum = null;
+		
+		for (Element e : list) {
+			if (e.className().equals("album")) {
+				newAlbum = new Album();
+				List<Song> newSongList = new ArrayList<Song>();
+				newAlbum.setAlbumSongs(newSongList);
+				if (e.childNodeSize() > 1) {
+					String albumName = e.select("b").text();
+					newAlbum.setAlbumName(albumName.substring(1, albumName.length()-1));
+					String typeYear = e.text().replace(albumName, "");
+					String[] typeYearArr = typeYear.split("[:]", 2);
+					newAlbum.setAlbumType(typeYearArr[0]);
+					newAlbum.setAlbumYear(typeYearArr[1].replaceAll("[()]", "").trim());
 				}
-				if(hasSong) {
-					album.setAlbumSongs(songList);
+				else {
+					newAlbum.setAlbumName(e.text());
 				}
+				results.add(newAlbum);
+			}
+			else if (e.nodeName() == "a" && e.hasText()) {
+				newAlbum.getAlbumSongs().add(new Song(e.text()));
 			}
 		}
+		
+		for (Album album : results) {
+			System.out.println("ALBUM:" + album.getAlbumName());
+			System.out.println("TYPE:" + album.getAlbumType());
+			System.out.println("YEAR:" + album.getAlbumYear());
+			for (Song song : album.getAlbumSongs()) {
+				System.out.println("SONG:" + song.getSongName());
+			}
+		}
+		
 		return results;
 	}
 	
 	private String formatName(String word) {
 		return word.replaceAll("[^a-zA-Z ]", "").trim();
-	}
+	}	
 	
 }
 
