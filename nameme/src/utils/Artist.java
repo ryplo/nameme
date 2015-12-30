@@ -1,4 +1,4 @@
-package artist;
+package utils;
 
 import java.net.URL;
 

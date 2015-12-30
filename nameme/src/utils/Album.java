@@ -1,14 +1,12 @@
-package album;
+package utils;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.jsoup.nodes.Document;
 
 import scraper.Scraper;
-import song.Song;
 
 public class Album {
 
@@ -42,7 +40,17 @@ public class Album {
 		this.albumSongs = albumSongs;
 	} 
 	
-	
+	public List<Song> getRandomSongList() {
+		Random rand = new Random();
+		int randNum;
+		List<Song> randomSongs = new ArrayList<Song>();
+		for (int i = 0; i < 3; i++) {
+			randNum = rand.nextInt(albumSongs.size()) + 1;
+			System.out.println("random number: " + randNum);
+			randomSongs.add(albumSongs.get(randNum));
+		}
+		return randomSongs;
+	}
 
 //	public List<String> formatAlbums(List<String> results) {
 //		int i = 0; 

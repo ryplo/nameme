@@ -15,16 +15,16 @@ import java.util.Set;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.*;
+import org.jsoup.safety.Whitelist;
 import org.jsoup.select.*;
 
-import album.Album;
-import artist.Artist;
-import song.Song;
+import utils.Album;
+import utils.Artist;
+import utils.Song;
 
 public class Scraper {
 	
-	private final String SKETCHY_URL = "http://www.azlyrics.com/";
-	private final String HTML = ".html";
+	private final String URL_HEAD = "http://www.azlyrics.com";
 	private final int[] list = {0, 1, 2, 3, 4, 5, 6, 7, 8};
 	
 	public Document connectHtml(String link) throws IOException, URISyntaxException {
@@ -76,20 +76,38 @@ public class Scraper {
 				results.add(newAlbum);
 			}
 			else if (e.nodeName() == "a" && e.hasText()) {
-				newAlbum.getAlbumSongs().add(new Song(e.text()));
-			}
-		}
-		
-		for (Album album : results) {
-			System.out.println("ALBUM:" + album.getAlbumName());
-			System.out.println("TYPE:" + album.getAlbumType());
-			System.out.println("YEAR:" + album.getAlbumYear());
-			for (Song song : album.getAlbumSongs()) {
-				System.out.println("SONG:" + song.getSongName());
+				Song newSong = new Song();
+				newSong.setSongName(e.text());
+				newSong.setSongUrl(e.attr("href").replace("..", URL_HEAD));
+//				System.out.println("URLLLL: " + newSong.getSongUrl());
+				newAlbum.getAlbumSongs().add(newSong);
 			}
 		}
 		
 		return results;
+	}
+	
+	public List<String> getRandomLyric(Song correctSong) throws IOException, URISyntaxException {
+		List<String> randomLyric = new ArrayList<String>();
+		Document doc = connectHtml(correctSong.getSongUrl());
+		Elements thing = doc.select("div.ringtone ~ div:has(i)");
+		doc.select("i").remove();
+		String s = thing.html().replaceAll("<br> ", "").replace("\n\n", "");
+	    String[] songLyrics = s.split("\n");
+
+	    Random rand = new Random();
+	    String lyric;
+	    String nextLyric;
+	    int randNum;
+	    do {
+			randNum = rand.nextInt(songLyrics.length);
+			lyric = songLyrics[randNum];
+			nextLyric = songLyrics[randNum +1];
+			// check if next lyric exists
+	    } while (lyric == null || nextLyric == null || lyric.contains("<") || nextLyric.contains("<"));
+	    randomLyric.add(lyric);
+	    randomLyric.add(nextLyric);
+		return randomLyric;
 	}
 	
 	private String formatName(String word) {

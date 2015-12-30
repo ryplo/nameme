@@ -1,18 +1,11 @@
-package song;
+package utils;
 
 public class Song {
 	
 	private String songName;
 	private String songUrl;
 	private String songLyrics;
-	
-	public Song(){
-		
-	}
-	
-	public Song(String songName) {
-		this.songName = songName;
-	}
+	private boolean isCorrect;
 	
 	public String getSongName() {
 		return songName;
@@ -31,6 +24,12 @@ public class Song {
 	}
 	public void setSongLyrics(String songLyrics) {
 		this.songLyrics = songLyrics;
+	}
+	public boolean isCorrect() {
+		return isCorrect;
+	}
+	public void setCorrect(boolean isCorrect) {
+		this.isCorrect = isCorrect;
 	}
 	
 	
