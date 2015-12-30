@@ -19,6 +19,7 @@ public class Nameme {
 	
 	public static void main(String[] args) throws IOException, URISyntaxException {
 		Scraper scraper = new Scraper();
+		int score = 0;
 		System.out.println("Which artist do you think you know best?");
 		//should validate
 		String artist = myScanner.nextLine();
@@ -34,20 +35,45 @@ public class Nameme {
 		}
 		String choice = myScanner.nextLine();
 		Album albumChoice = albumResults.get(Integer.valueOf(choice) - 1);
-		List<Song> randomSongs = albumChoice.getRandomSongList();
-		Random rand = new Random();
-		System.out.println("random song size: " + randomSongs.size());
-		int randNum = rand.nextInt(randomSongs.size());
-		System.out.println("RANDNUM: " + randNum);
-		Song correctSong = randomSongs.get(randNum);
-		List<String> songLyric = scraper.getRandomLyric(correctSong);
-		for (Song song : randomSongs) {
-			System.out.println(song.getSongName());
-		}
-		System.out.println("rando lyrics");
-		for (String lyric : songLyric) {
-			System.out.println(lyric);
-		}
+		
+		// do while they don't press the 'new artist/album' button
+		do {
+			List<Song> randomSongs = albumChoice.getRandomSongList();
+			Random rand = new Random();
+			System.out.println("random song size: " + randomSongs.size());
+			int randNum = rand.nextInt(randomSongs.size());
+			System.out.println("RANDNUM here: " + randNum);
+			Song correctSong = randomSongs.get(randNum);
+			List<String> songLyric = scraper.getRandomLyric(correctSong);
+	
+			System.out.println("\nWhich song are these lyrics from?");
+			for (String lyric : songLyric) {
+				System.out.println(lyric);
+			}
+			System.out.println("\nYour choices: ");
+			int c = 0;
+			for (Song song : randomSongs) {
+				c++;
+				System.out.println(c + song.getSongName());
+			}
+			
+			// in the actual game, will not be sending int, but song name through button
+			choice = myScanner.nextLine();
+			
+			Song songGuess = randomSongs.get(Integer.valueOf(choice) - 1);
+			
+			if (songGuess == correctSong) {
+				score++;
+				System.out.println("yay! score = " + score);
+				
+			}
+			else {
+				System.out.println("no you failed. score = " + score);
+			}
+		} while (!choice.equals("5"));
+		
+		
+		
 		// nameme - get artist from user
 		// nameme - get album from user
 		// album - get random song + two fakes, return array of three songs

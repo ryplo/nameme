@@ -90,7 +90,7 @@ public class Scraper {
 	public List<String> getRandomLyric(Song correctSong) throws IOException, URISyntaxException {
 		List<String> randomLyric = new ArrayList<String>();
 		Document doc = connectHtml(correctSong.getSongUrl());
-		Elements thing = doc.select("div.ringtone ~ div:has(i)");
+		Elements thing = doc.select("div:not([class]):not([id])");
 		doc.select("i").remove();
 		String s = thing.html().replaceAll("<br> ", "").replace("\n\n", "");
 	    String[] songLyrics = s.split("\n");
@@ -100,7 +100,8 @@ public class Scraper {
 	    String nextLyric;
 	    int randNum;
 	    do {
-			randNum = rand.nextInt(songLyrics.length);
+	    	System.out.println("Songlyrics length = " + songLyrics.length);
+			randNum = rand.nextInt(songLyrics.length - 1);
 			lyric = songLyrics[randNum];
 			nextLyric = songLyrics[randNum +1];
 			// check if next lyric exists
