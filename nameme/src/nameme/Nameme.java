@@ -1,7 +1,6 @@
 package nameme;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -17,19 +16,28 @@ public class Nameme {
 	private static Scanner myScanner = new Scanner(System.in);
 	private static final String URL = "http://search.azlyrics.com/search.php?q=";
 	
-	public static void main(String[] args) throws IOException, URISyntaxException {
+	public static void main(String[] args) {
 		Scraper scraper = new Scraper();
 		int score = 0;
 		List<Artist> artistChoices = new ArrayList<Artist>();
 		do {
 			System.out.println("Which artist do you think you know best?");
 			String artist = myScanner.nextLine();
-			artistChoices = scraper.findArtistResults(URL + artist);
+			try {
+				artistChoices = scraper.findArtistResults(URL + artist);
+			} catch (IOException e) {
+				System.out.println("Failed to connect to site: " + e.getMessage());
+			}
 		} while (artistChoices.isEmpty());
 		
 		Artist artistChoice = getArtistChoice(artistChoices);
 		System.out.println(artistChoice.getName() + " : " + artistChoice.getUrl());
-		List<Album> albumResults = scraper.findAlbumResults(artistChoice.getUrl());
+		List<Album> albumResults = new ArrayList<Album>();
+		try {
+			albumResults = scraper.findAlbumResults(artistChoice.getUrl());
+		} catch (IOException e) {
+			System.out.println("Failed to connect to site: " + e.getMessage());
+		}
 		System.out.println("Select an album");
 		int i = 0;
 		for (Album album : albumResults) {
@@ -44,11 +52,16 @@ public class Nameme {
 			// what if album is less than 3 songs? 
 			List<Song> randomSongs = albumChoice.getRandomSongList();
 			Random rand = new Random();
-			System.out.println("random song size: " + randomSongs.size());
+//			System.out.println("random song size: " + randomSongs.size());
 			int randNum = rand.nextInt(randomSongs.size());
-			System.out.println("RANDNUM here: " + randNum);
+//			System.out.println("RANDNUM here: " + randNum);
 			Song correctSong = randomSongs.get(randNum);
-			List<String> songLyric = scraper.getRandomLyric(correctSong);
+			List<String> songLyric = new ArrayList<String>();
+			try {
+				songLyric = scraper.getRandomLyric(correctSong);
+			} catch (IOException e) {
+				System.out.println("Failed to connect to site: " + e.getMessage());
+			}
 	
 			System.out.println("\nWhich song are these lyrics from?");
 			for (String lyric : songLyric) {
@@ -75,33 +88,6 @@ public class Nameme {
 				System.out.println("no you failed. score = " + score);
 			}
 		} while (!choice.equals("5"));
-		
-		
-		
-		// nameme - get artist from user
-		// nameme - get album from user
-		// album - get random song + two fakes, return array of three songs
-		// nameme - take first of array, call scraper to find lyrics for that song populate lyrics 
-		// nameme - call song to get random lyric
-			
-		// song - get random lyric
-		// get user input on choice
-		// is same? 
-		
-		//get albumresults
-		//create game (albumresults)
-			// in game
-			// pick random song, and two other random songs for choices
-			// scraper to navigate to song lyric page
-			// pick random line - output
-			// check selection
-			// if keep same artist, keep looping through here
-			// if quit or new artist, quit here 
-		
-		//album: 
-			// get random songs 
-		//song:
-			//get random lyric 
 		
 	}
 	

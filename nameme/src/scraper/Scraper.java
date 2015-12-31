@@ -19,14 +19,12 @@ public class Scraper {
 	private final String URL_HEAD = "http://www.azlyrics.com";
 	private final int[] list = {0, 1, 2, 3, 4, 5, 6, 7, 8};
 	
-	public Document connectHtml(String link) throws IOException, URISyntaxException {
+	public Document connectHtml(String link) throws IOException {
 		Document doc = Jsoup.connect(link).get();
-		String title = doc.title();
-		System.out.println(title);
 		return doc;
 	}
 	
-	public List<Artist> findArtistResults(String url) throws IOException, URISyntaxException {
+	public List<Artist> findArtistResults(String url) throws IOException {
 		List<Artist> artistList = new ArrayList<Artist>();
 		Document doc = connectHtml(url);
 		Element table = doc.select("table.table").first();
@@ -47,7 +45,7 @@ public class Scraper {
 		return artistList;
 	}
 	
-	public List<Album> findAlbumResults(String url) throws IOException, URISyntaxException {
+	public List<Album> findAlbumResults(String url) throws IOException {
 		Document doc = connectHtml(url);
 		List<Album> results = new ArrayList<Album>();
 		
@@ -76,7 +74,6 @@ public class Scraper {
 				Song newSong = new Song();
 				newSong.setSongName(e.text());
 				newSong.setSongUrl(e.attr("href").replace("..", URL_HEAD));
-//				System.out.println("URLLLL: " + newSong.getSongUrl());
 				newAlbum.getAlbumSongs().add(newSong);
 			}
 		}
@@ -84,7 +81,7 @@ public class Scraper {
 		return results;
 	}
 	
-	public List<String> getRandomLyric(Song correctSong) throws IOException, URISyntaxException {
+	public List<String> getRandomLyric(Song correctSong) throws IOException {
 		List<String> randomLyric = new ArrayList<String>();
 		Document doc = connectHtml(correctSong.getSongUrl());
 		Elements thing = doc.select("div:not([class]):not([id])");
@@ -97,13 +94,13 @@ public class Scraper {
 	    String nextLyric;
 	    int randNum;
 	    do {
-	    	System.out.println("Songlyrics length = " + songLyrics.length);
+//	    	System.out.println("Songlyrics length = " + songLyrics.length);
 			randNum = rand.nextInt(songLyrics.length - 1);
 			lyric = songLyrics[randNum];
 			nextLyric = songLyrics[randNum +1];
-			if (lyric.contains(correctSong.getSongName().toLowerCase()) || nextLyric.contains(correctSong.getSongName().toLowerCase())) {
-				System.out.println("got name");
-			}
+//			if (lyric.contains(correctSong.getSongName().toLowerCase()) || nextLyric.contains(correctSong.getSongName().toLowerCase())) {
+//				System.out.println("got name");
+//			}
 			
 			// check if next lyric exists, if it's some html, if it contains the song name (in lower case)
 	    } while (lyric == null || nextLyric == null 

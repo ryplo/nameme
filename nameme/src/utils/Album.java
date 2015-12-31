@@ -44,7 +44,7 @@ public class Album {
 		int i = 0;
 		do {
 			randNum = rand.nextInt(albumSongs.size()) + 1;
-			System.out.println(" randomNumber: " + randNum );
+//			System.out.println(" randomNumber: " + randNum );
 			if (!randomNumbers.contains(randNum)) {
 				randomNumbers.add(randNum);
 				randomSongs.add(albumSongs.get(randNum - 1));
