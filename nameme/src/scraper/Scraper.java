@@ -1,21 +1,13 @@
 package scraper;
 
-import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
-import java.util.Scanner;
-import java.util.Set;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.*;
-import org.jsoup.safety.Whitelist;
 import org.jsoup.select.*;
 
 import utils.Album;
@@ -38,14 +30,19 @@ public class Scraper {
 		List<Artist> artistList = new ArrayList<Artist>();
 		Document doc = connectHtml(url);
 		Element table = doc.select("table.table").first();
-		Elements resRows = table.select("td");
-		int i = 0;
-		
-		for(Element res : resRows) {
-			Artist artist = new Artist();
-			artist.setName(formatName(res.text()));
-			artist.setUrl(res.select("a").attr("href"));
-			artistList.add(artist);
+		if (null == table) {
+			System.out.println("No results - try again");
+		}
+		else {
+			Elements resRows = table.select("td");
+			int i = 0;
+			
+			for(Element res : resRows) {
+				Artist artist = new Artist();
+				artist.setName(formatName(res.text()));
+				artist.setUrl(res.select("a").attr("href"));
+				artistList.add(artist);
+			}
 		}
 		return artistList;
 	}
@@ -104,8 +101,14 @@ public class Scraper {
 			randNum = rand.nextInt(songLyrics.length - 1);
 			lyric = songLyrics[randNum];
 			nextLyric = songLyrics[randNum +1];
-			// check if next lyric exists
-	    } while (lyric == null || nextLyric == null || lyric.contains("<") || nextLyric.contains("<"));
+			if (lyric.contains(correctSong.getSongName().toLowerCase()) || nextLyric.contains(correctSong.getSongName().toLowerCase())) {
+				System.out.println("got name");
+			}
+			
+			// check if next lyric exists, if it's some html, if it contains the song name (in lower case)
+	    } while (lyric == null || nextLyric == null 
+	    		|| lyric.contains("<") || nextLyric.contains("<")
+	    		|| lyric.toLowerCase().contains(correctSong.getSongName().toLowerCase()) || nextLyric.toLowerCase().contains(correctSong.getSongName().toLowerCase()));
 	    randomLyric.add(lyric);
 	    randomLyric.add(nextLyric);
 		return randomLyric;

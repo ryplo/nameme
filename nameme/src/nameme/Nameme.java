@@ -20,10 +20,13 @@ public class Nameme {
 	public static void main(String[] args) throws IOException, URISyntaxException {
 		Scraper scraper = new Scraper();
 		int score = 0;
-		System.out.println("Which artist do you think you know best?");
-		//should validate
-		String artist = myScanner.nextLine();
-		List<Artist> artistChoices = scraper.findArtistResults(URL + artist);
+		List<Artist> artistChoices = new ArrayList<Artist>();
+		do {
+			System.out.println("Which artist do you think you know best?");
+			String artist = myScanner.nextLine();
+			artistChoices = scraper.findArtistResults(URL + artist);
+		} while (artistChoices.isEmpty());
+		
 		Artist artistChoice = getArtistChoice(artistChoices);
 		System.out.println(artistChoice.getName() + " : " + artistChoice.getUrl());
 		List<Album> albumResults = scraper.findAlbumResults(artistChoice.getUrl());
@@ -38,6 +41,7 @@ public class Nameme {
 		
 		// do while they don't press the 'new artist/album' button
 		do {
+			// what if album is less than 3 songs? 
 			List<Song> randomSongs = albumChoice.getRandomSongList();
 			Random rand = new Random();
 			System.out.println("random song size: " + randomSongs.size());

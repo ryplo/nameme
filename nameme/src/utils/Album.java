@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.jsoup.nodes.Document;
-
-import scraper.Scraper;
-
 public class Album {
 
 	private String albumName;
@@ -44,23 +40,20 @@ public class Album {
 		Random rand = new Random();
 		int randNum;
 		List<Song> randomSongs = new ArrayList<Song>();
-		for (int i = 0; i < 3; i++) {
+		List<Integer> randomNumbers = new ArrayList<Integer>();
+		int i = 0;
+		do {
 			randNum = rand.nextInt(albumSongs.size()) + 1;
-			System.out.println("random number: " + randNum);
-			randomSongs.add(albumSongs.get(randNum - 1));
-		}
+			System.out.println(" randomNumber: " + randNum );
+			if (!randomNumbers.contains(randNum)) {
+				randomNumbers.add(randNum);
+				randomSongs.add(albumSongs.get(randNum - 1));
+				
+				i++;
+			}
+		} while (i < 3 );
+
 		return randomSongs;
 	}
-
-//	public List<String> formatAlbums(List<String> results) {
-//		int i = 0; 
-//		for (String result : results) {
-//			i++;
-//			result = result.replaceAll("[\"]", "");
-//			System.out.println(i + ". " + result);
-//		}
-//		return results;
-//	}
-	
 	
 }
